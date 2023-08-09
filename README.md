@@ -3,11 +3,17 @@ current-KoLMafia
 
 A simple script to automatically download and launch the current build of KoL Mafia, an advanced interface for the online adventure game Kingdom of Loathing.
 
-You can obtain the script by checking out the repository from the command line, like this:
+1. You will need a Github account to get a token. Place this token in a `.env` file and format it as
+```
+GH_PERSONAL_KEY=<your github API key>
+```
+The key can be the modern one with no permissions because we only need it to allow API calls to GitHub.
+
+2. You can obtain the script by checking out the repository from the command line, like this:
 
 `git clone git@github.com:scguo/current-KoLMafia.git kolmafia/`
 
-... or you can just grab it directly, like this:
+* ... or you can just grab it directly, like this:
 
 `curl -O https://raw.githubusercontent.com/scguo/current-KoLMafia/master/getLatestBuild.sh`
 
