@@ -15,6 +15,12 @@ then
     export $(grep -v '^#' .env | xargs)
 fi
 
+if [ -z ${GH_PERSONAL_KEY} ]
+then
+echo "Missing .env variable GH_PERSONAL_KEY!!! Check README.md"
+exit 1
+fi
+
 # Download the latest build ...
  LATEST=$(curl -L \
   -H "Accept: application/vnd.github+json" \
@@ -26,6 +32,12 @@ fi
 
 echo "Current latest jar is: $LATEST"
 
+if [ -z ${LATEST} ]
+then
+    echo "Empty response... something went wrong...check if your GitHub API key is still valid!"
+    exit 1
+fi
+
 # Check whether the current build is already present. If it is, don't bother downloading it again.
 # The filename for KoLmafia is still 18 characters long, and that seems unlikely to change in the near future.
 # This is a bit of a hacky solution, though ...
@@ -34,16 +46,18 @@ if [ -f ${LATEST:(-18)} ]
 then
     echo "Latest KoLmafia build already present: ${LATEST##*/}" 
 else
-    echo "Fetching latest KoLmafia build: ${LATEST##*/}"
     echo "making a storage folder for old version/s..."
     mkdir -p old_versions
     echo "saving old versions..."
     mv -v KoL*jar old_versions
-    curl -O $LATEST
+
+    echo "Fetching latest KoLmafia build: ${LATEST##*/}"
+    curl -LO $LATEST
     
 fi
 
 # Launch the newest build on-hand ...
-java -jar ${LATEST##*/}
+echo "launching KoLmafia, sit tight!"
+java -jar ${LATEST##*/} &
 
-exit 0
+exit $?
