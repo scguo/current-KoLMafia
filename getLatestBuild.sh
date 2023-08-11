@@ -26,12 +26,6 @@ then
     export $(grep -v '^#' .env | xargs)
 fi
 
-if [ -z ${GH_PERSONAL_KEY} ]
-then
-echo "Missing .env variable GH_PERSONAL_KEY!!! Check README.md"
-exit 1
-fi
-
 if [ -z ${DELAY_DAYS} ]
 then
 echo "Missing .env variable DELAY_DAYS!!! Defaulting to zero days"
@@ -62,21 +56,19 @@ date -R > "$datefile"
 
 # Download the latest build ...
  
- LATEST=$(curl -L \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer $GH_PERSONAL_KEY" \
-  -H "X-GitHub-Api-Version: 2022-11-28" \
-  https://api.github.com/repos/kolmafia/kolmafia/releases/latest \
-  | grep -o 'https://github.com/kolmafia/kolmafia/releases/download/r[0-9][0-9][0-9][0-9][0-9]/KoLmafia-[0-9][0-9][0-9][0-9][0-9].jar' | head -1)
+ LATESTJAR=$(curl -L \
+  https://ci.kolmafia.us/job/Kolmafia/lastSuccessfulBuild/artifact/dist/ \
+  | grep -o 'KoLmafia-[0-9][0-9][0-9][0-9][0-9].jar' | head -1)
 
-#LATEST='https://github.com/kolmafia/kolmafia/releases/download/r27532/KoLmafia-27532.jar'
+#LATESTJAR='KoLmafia-27532.jar'
+LATEST="https://ci.kolmafia.us/job/Kolmafia/lastSuccessfulBuild/artifact/dist/$LATESTJAR"
 
 
 echo "Current latest jar is: $LATEST"
 
 if [ -z ${LATEST} ]
 then
-    echo "Empty response... something went wrong...check if your GitHub API key is still valid!"
+    echo "Empty response... something went wrong..."
     exit 1
 fi
 
