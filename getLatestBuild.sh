@@ -14,6 +14,13 @@
 # File that stores the last execution date in plain text. relies on file last touched date
 datefile=./.datefile
 
+launch_latest() {
+    # Launch the newest build on-hand ...
+    latestLocal=$(ls -t KoL*jar | head -1)
+    echo "launching newest file $latestLocal, sit tight!"
+#    java -jar $latestLocal &
+}
+
 if [ -f .env ]
 then
     export $(grep -v '^#' .env | xargs)
@@ -42,9 +49,11 @@ echo "Update delay set to $delaaySeconds seconds ($DELAY_DAYS days)"
 if test -f "$datefile" ; then
     elapsedTime="$(($(date "+%s")-$(date -r "$datefile" "+%s")))"
     if test $elapsedTime -lt "$delaySeconds" ; then
-        echo "It has been $elapsedTime seconds since last run..."
-        echo "$DELAY_DAYS days have not passed since last update run...exiting"
-        exit 1
+        echo "Has been $elapsedTime second(s) since last run..."
+        echo "$DELAY_DAYS day(s) have not passed...skipping update!"
+        
+        launch_latest
+        exit 0
     fi
 fi
 
@@ -52,15 +61,15 @@ fi
 date -R > "$datefile"
 
 # Download the latest build ...
-# :'
+ :'
  LATEST=$(curl -L \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $GH_PERSONAL_KEY" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
   https://api.github.com/repos/kolmafia/kolmafia/releases/latest \
   | grep -o 'https://github.com/kolmafia/kolmafia/releases/download/r[0-9][0-9][0-9][0-9][0-9]/KoLmafia-[0-9][0-9][0-9][0-9][0-9].jar' | head -1)
-# '
-# LATEST='https://github.com/kolmafia/kolmafia/releases/download/r27532/KoLmafia-27532.jar'
+ '
+LATEST='https://github.com/kolmafia/kolmafia/releases/download/r27532/KoLmafia-27532.jar'
 
 
 echo "Current latest jar is: $LATEST"
@@ -79,7 +88,7 @@ if [ -f ${LATEST:(-18)} ]
 then
     echo "Latest KoLmafia build already present: ${LATEST##*/}" 
 else
-    echo "making a storage folder for old version/s..."
+    echo "making a storage folder for old version(s)..."
     mkdir -p old_versions
     echo "saving old versions..."
     mv -v KoL*jar old_versions
@@ -89,8 +98,7 @@ else
     
 fi
 
-# Launch the newest build on-hand ...
-echo "launching KoLmafia, sit tight!"
-java -jar ${LATEST##*/} &
+# start the jar
+launch_latest
 
 exit $?
