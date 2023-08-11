@@ -18,7 +18,7 @@ launch_latest() {
     # Launch the newest build on-hand ...
     latestLocal=$(ls -t KoL*jar | head -1)
     echo "launching newest file $latestLocal, sit tight!"
-#    java -jar $latestLocal &
+    java -jar $latestLocal &
 }
 
 if [ -f .env ]
@@ -61,15 +61,15 @@ fi
 date -R > "$datefile"
 
 # Download the latest build ...
- :'
+ 
  LATEST=$(curl -L \
   -H "Accept: application/vnd.github+json" \
   -H "Authorization: Bearer $GH_PERSONAL_KEY" \
   -H "X-GitHub-Api-Version: 2022-11-28" \
   https://api.github.com/repos/kolmafia/kolmafia/releases/latest \
   | grep -o 'https://github.com/kolmafia/kolmafia/releases/download/r[0-9][0-9][0-9][0-9][0-9]/KoLmafia-[0-9][0-9][0-9][0-9][0-9].jar' | head -1)
- '
-LATEST='https://github.com/kolmafia/kolmafia/releases/download/r27532/KoLmafia-27532.jar'
+
+#LATEST='https://github.com/kolmafia/kolmafia/releases/download/r27532/KoLmafia-27532.jar'
 
 
 echo "Current latest jar is: $LATEST"
