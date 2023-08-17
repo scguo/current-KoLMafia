@@ -5,3 +5,4 @@
 *.app
 .env
 old_versions
+.datefile

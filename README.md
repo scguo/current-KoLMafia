@@ -3,13 +3,7 @@ current-KoLMafia
 
 A simple script to automatically download and launch the current build of KoL Mafia, an advanced interface for the online adventure game Kingdom of Loathing.
 
-1. You will need a Github account to get a token. Place this token in a `.env` file and format it as
-```
-GH_PERSONAL_KEY=<your github API key>
-```
-The key can be the modern one with no permissions because we only need it to allow API calls to GitHub.
-
-2. You can obtain the script by checking out the repository from the command line, like this:
+1. You can obtain the script by checking out the repository from the command line, like this:
 
 `git clone git@github.com:scguo/current-KoLMafia.git kolmafia/`
 
@@ -18,6 +12,10 @@ The key can be the modern one with no permissions because we only need it to all
 `curl -O https://raw.githubusercontent.com/scguo/current-KoLMafia/master/getLatestBuild.sh`
 
 Running this script will download the latest hourly build of KoL Mafia to the folder you call the script from. It will then launch the .jar file using java ... if you can open the hourly builds when you manually download them, I am going to assume that you've got that figured out already.
+
+The date delay between updates may be configured manually. It defaults to always updating but you can specify a day (integer) using `DELAY_DAYS=<number of days>` in the `.env` file!
+
+Note that you can comment lines in the `.env` file if you want to play around!
 
 =======
 
